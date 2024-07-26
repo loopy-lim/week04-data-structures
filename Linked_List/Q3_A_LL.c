@@ -33,7 +33,7 @@ void removeAllItems(LinkedList *ll);
 ListNode *findNode(LinkedList *ll, int index);
 int insertNode(LinkedList *ll, int index, int value);
 int removeNode(LinkedList *ll, int index);
-void appendItem(ListNode *head, ListNode *node);
+ListNode *extendItem(ListNode *head, ListNode *node);
 
 //////////////////////////// main() //////////////////////////////////////////////
 
@@ -92,7 +92,6 @@ void moveOddItemsToBack(LinkedList *ll)
 	if (ll->size < 2)
 		return;
 	ListNode *startNode = ll->head, *oddNode = NULL;
-
 	while (startNode->next != NULL)
 	{
 		if (startNode->next->item % 2 == 0)
@@ -106,27 +105,30 @@ void moveOddItemsToBack(LinkedList *ll)
 		oddNode->next = NULL;
 
 		// 홀수 일 때 더하기
-		if (oddList == NULL)
-		{
-			oddList = oddNode;
-		}
-		else
-		{
-			appendItem(oddList, oddNode);
-		}
+		oddList = oddList == NULL ? oddNode : extendItem(oddList, oddNode);
 	}
-	appendItem(ll->head, oddList);
+	if (ll->head->item % 2 == 0)
+	{
+		oddNode = ll->head;
+		ll->head = ll->head->next;
+
+		oddNode->next = oddList;
+		oddList = oddNode;
+	}
+
+	extendItem(ll->head, oddList);
 }
 
-void appendItem(ListNode *head, ListNode *node)
+ListNode *extendItem(ListNode *head, ListNode *node)
 {
 	if (head == NULL || node == NULL)
-		return;
+		return head;
 	while (head->next != NULL)
 	{
 		head = head->next;
 	}
 	head->next = node;
+	return head;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
